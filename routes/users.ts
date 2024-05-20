@@ -5,8 +5,8 @@ const router = express.Router();
 router.get("/", async (_req, res) => {
   try {
     const db = getDatabase();
-    const posts = await db.all("SELECT * FROM posts");
-    res.send(posts);
+    const users = await db.all("SELECT * FROM users");
+    res.send(users);
   } catch (error) {}
 });
 

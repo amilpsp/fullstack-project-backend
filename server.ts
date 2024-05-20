@@ -1,23 +1,11 @@
 import cors from "cors";
 import express from "express";
-import * as sqlite from "sqlite";
-import { Database } from "sqlite";
-import sqlite3 from "sqlite3";
+import { startDatabase } from "./db";
+import postsRouter from "./routes/posts";
+import forumsRouter from "./routes/forums";
+import usersRouter from "./routes/users";
 
 const port = 10000;
-
-let database: Database;
-
-(async () => {
-  database = await sqlite.open({
-    driver: sqlite3.Database,
-    filename: "test.sqlite",
-  });
-
-  await database.run("PRAGMA foreign_keys = ON");
-
-  console.log("Databas redo");
-})();
 
 const app = express();
 
@@ -26,12 +14,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (_req, res) => {
-  res.send("Hello there");
-});
-/*
-import postsRouter from "./routes/posts";
+//starting db and defining routes
+(async () => {
+  await startDatabase();
 
-app.use("/postsRouter", postsRouter);
-*/
-app.listen(port);
+  app.use("/posts", postsRouter);
+  app.use("/forums", forumsRouter);
+  app.use("/users", usersRouter);
+  app.listen(port);
+})();

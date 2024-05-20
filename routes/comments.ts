@@ -1,12 +1,16 @@
 import express from "express";
 import { getDatabase } from "../db";
+
 const router = express.Router();
 
 router.get("/", async (_req, res) => {
   try {
     const db = getDatabase();
-    const posts = await db.all("SELECT * FROM posts");
-    res.send(posts);
+
+    //get the post id from frontend and send back the comments with the same post id, param or query?
+
+    // const info = await db.all("SELECT * FROM forums");
+    // res.send(info);
   } catch (error) {}
 });
 
