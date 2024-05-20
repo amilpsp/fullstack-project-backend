@@ -2,10 +2,10 @@
   "name": "fullstack-project-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
     "build": "npx tsc",
-    "dev": "concurrently \"nodemon index.js\" \"npx tsc --watch\"",
+    "dev": "concurrently \"nodemon server.js\" \"npx tsc --watch\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
