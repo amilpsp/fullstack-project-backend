@@ -29,6 +29,30 @@ interface dbPost {
   created_time: string;
 }
 
+interface dbUser {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  created: string;
+}
+
+interface dbTopic {
+  id: number;
+  name: string;
+  description: string;
+  created: string;
+}
+
+interface dbComment {
+  id: number;
+  author: number;
+  post: number;
+  content: string;
+  created_date: string;
+  created_time: string;
+}
+
 router.get("/", async (req, res) => {
   let formattedPosts: Post[] = [];
   try {
@@ -37,14 +61,14 @@ router.get("/", async (req, res) => {
 
     //if no queries
     if (!req.query.topic || !req.query.id) {
-      posts = await db.all(
+      posts = await db.all<dbPost[]>(
         "SELECT * FROM posts ORDER BY created_date ASC, created_time ASC"
       );
     }
 
     //if topic query is passed
     if (req.query.topic) {
-      posts = await db.all(
+      posts = await db.all<dbPost[]>(
         "SELECT * FROM posts WHERE forum=? ORDER BY created_date ASC, created_time ASC",
         [req.query.topic]
       );
@@ -52,7 +76,7 @@ router.get("/", async (req, res) => {
 
     //if id query is passed
     if (req.query.id) {
-      posts = await db.all(
+      posts = await db.all<dbPost[]>(
         "SELECT * FROM posts WHERE author=? ORDER BY created_date ASC, created_time ASC",
         [req.query.id]
       );
@@ -60,21 +84,46 @@ router.get("/", async (req, res) => {
 
     // iterate through the posts to format them according to the interface
     for (let post of posts) {
-      const author = await db.get("SELECT * FROM users WHERE id=? ", [
+      const author: dbUser = (await db.get("SELECT * FROM users WHERE id=? ", [
         post.author,
-      ]);
-      const topic = await db.get("SELECT * FROM forums WHERE id=?", [
-        post.forum,
-      ]);
-      const lastComment = (await db.get("SELECT * FROM comments WHERE id=?", [
-        post.last_comment_id,
       ])) ?? {
         id: 0,
-        author: author.username,
+        username: "[deleted]",
+        email: "[deleted]",
+        password: "",
+        created: "",
+      };
+
+      const topic: dbTopic = (await db.get("SELECT * FROM forums WHERE id=?", [
+        post.forum,
+      ])) ?? {
+        id: 0,
+        name: "uncategorized",
+        description: "uncategorized",
+        created: "",
+      };
+
+      const lastComment: dbComment = (await db.get(
+        "SELECT * FROM comments WHERE id=?",
+        [post.last_comment_id]
+      )) ?? {
+        id: 0,
+        author: post.author,
         post: post.id,
         content: post.content,
         created_date: post.created_date,
         created_time: post.created_time,
+      };
+
+      const lastCommentAuthor: dbUser = (await db.get(
+        "SELECT * FROM users WHERE id=?",
+        [lastComment.author]
+      )) ?? {
+        id: 0,
+        username: "[deleted]",
+        email: "[deleted]",
+        password: "",
+        created: "",
       };
 
       let newPost: Post = {
@@ -86,7 +135,7 @@ router.get("/", async (req, res) => {
         topic: topic.name,
         replies: post.comment_amount,
         lastReply: {
-          name: lastComment.author,
+          name: lastCommentAuthor.username,
           date: lastComment.created_date,
           time: lastComment.created_time,
         },
