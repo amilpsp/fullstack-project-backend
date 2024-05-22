@@ -33,16 +33,28 @@ router.get("/", async (req, res) => {
   let formattedPosts: Post[] = [];
   try {
     const db = getDatabase();
-    let posts: dbPost[];
+    let posts: dbPost[] = [];
 
+    //if no queries
+    if (!req.query.topic || !req.query.id) {
+      posts = await db.all(
+        "SELECT * FROM posts ORDER BY created_date ASC, created_time ASC"
+      );
+    }
+
+    //if topic query is passed
     if (req.query.topic) {
       posts = await db.all(
         "SELECT * FROM posts WHERE forum=? ORDER BY created_date ASC, created_time ASC",
         [req.query.topic]
       );
-    } else {
+    }
+
+    //if id query is passed
+    if (req.query.id) {
       posts = await db.all(
-        "SELECT * FROM posts ORDER BY created_date ASC, created_time ASC"
+        "SELECT * FROM posts WHERE author=? ORDER BY created_date ASC, created_time ASC",
+        [req.query.id]
       );
     }
 
