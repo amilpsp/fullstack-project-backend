@@ -9,8 +9,8 @@ router.get("/", async (_req, res) => {
 
     //get the post id from frontend and send back the comments with the same post id, param or query?
 
-    // const info = await db.all("SELECT * FROM forums");
-    // res.send(info);
+    const comments = await db.all("SELECT * FROM comments");
+    res.send(comments);
   } catch (error) {}
 });
 
