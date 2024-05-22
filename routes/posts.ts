@@ -3,6 +3,7 @@ import { getDatabase } from "../db";
 const router = express.Router();
 
 interface Post {
+  id: number;
   name: string;
   content: string;
   date: string;
@@ -127,6 +128,7 @@ router.get("/", async (req, res) => {
       };
 
       let newPost: Post = {
+        id: post.id,
         name: post.title,
         content: post.content,
         date: post.created_date,
