@@ -61,7 +61,7 @@ router.get("/", async (req, res) => {
     let posts: dbPost[] = [];
 
     //if no queries
-    if (!req.query.topic || !req.query.id) {
+    if (!req.query.topic && !req.query.id) {
       posts = await db.all<dbPost[]>(
         "SELECT * FROM posts ORDER BY created_date ASC, created_time ASC"
       );
