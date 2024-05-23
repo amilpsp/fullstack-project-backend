@@ -3,6 +3,7 @@ import { getDatabase } from "../db";
 const router = express.Router();
 
 interface Post {
+  id: number;
   name: string;
   content: string;
   date: string;
@@ -60,7 +61,7 @@ router.get("/", async (req, res) => {
     let posts: dbPost[] = [];
 
     //if no queries
-    if (!req.query.topic || !req.query.id) {
+    if (!req.query.topic && !req.query.id) {
       posts = await db.all<dbPost[]>(
         "SELECT * FROM posts ORDER BY created_date ASC, created_time ASC"
       );
@@ -127,6 +128,7 @@ router.get("/", async (req, res) => {
       };
 
       let newPost: Post = {
+        id: post.id,
         name: post.title,
         content: post.content,
         date: post.created_date,
