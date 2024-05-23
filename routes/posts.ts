@@ -69,9 +69,21 @@ router.get("/", async (req, res) => {
 
     //if topic query is passed
     if (req.query.topic) {
+      //get correct forum id
+      const topic: dbTopic = (await db.get<dbTopic>(
+        "SELECT * FROM forums WHERE name=?",
+        [req.query.topic]
+      )) ?? {
+        id: 0,
+        name: "unassigned",
+        description: "unassigned",
+        created: "",
+      };
+
+      //get posts from correct forum
       posts = await db.all<dbPost[]>(
         "SELECT * FROM posts WHERE forum=? ORDER BY created_date ASC, created_time ASC",
-        [req.query.topic]
+        [topic.id]
       );
     }
 
@@ -99,8 +111,8 @@ router.get("/", async (req, res) => {
         post.forum,
       ])) ?? {
         id: 0,
-        name: "uncategorized",
-        description: "uncategorized",
+        name: "unassigned",
+        description: "unassigned",
         created: "",
       };
 
