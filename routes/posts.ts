@@ -53,7 +53,6 @@ interface DbPost {
 interface DbUser {
   id: number;
   username: string;
-  email: string;
   password: string;
   created: string;
 }
@@ -106,7 +105,6 @@ router.get("/:postId", async (req, res) => {
     )) ?? {
       id: 0,
       username: "[deleted]",
-      email: "",
       password: "",
       created: "",
     };
@@ -129,7 +127,6 @@ router.get("/:postId", async (req, res) => {
   )) ?? {
     id: 0,
     username: "[deleted]",
-    email: "",
     password: "",
     created: "",
   };
@@ -208,7 +205,6 @@ router.get("/", async (req, res) => {
       )) ?? {
         id: 0,
         username: "[deleted]",
-        email: "[deleted]",
         password: "",
         created: "",
       };
@@ -241,7 +237,6 @@ router.get("/", async (req, res) => {
       )) ?? {
         id: 0,
         username: "[deleted]",
-        email: "[deleted]",
         password: "",
         created: "",
       };
