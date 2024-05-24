@@ -1,5 +1,6 @@
 import express from "express";
 import { getDatabase } from "../db";
+
 const router = express.Router();
 
 interface Post {
@@ -8,11 +9,11 @@ interface Post {
   content: string;
   date: string;
   time: string;
-  originalPoster: string;
+  author: string;
   topic: string;
   replies: number;
   lastReply: {
-    name: string;
+    author: string;
     date: string;
     time: string;
   };
@@ -24,7 +25,7 @@ interface FullPost {
   content: string;
   date: string;
   time: string;
-  originalPoster: string;
+  author: string;
   topic: string;
   comments: Comment[];
 }
@@ -150,7 +151,7 @@ router.get("/:postId", async (req, res) => {
     content: post.content,
     date: post.created_date,
     time: post.created_time,
-    originalPoster: author.username,
+    author: author.username,
     topic: topic.name,
     comments: formattedComments,
   };
@@ -251,11 +252,11 @@ router.get("/", async (req, res) => {
         content: post.content,
         date: post.created_date,
         time: post.created_time,
-        originalPoster: author.username,
+        author: author.username,
         topic: topic.name,
         replies: post.comment_amount,
         lastReply: {
-          name: lastCommentAuthor.username,
+          author: lastCommentAuthor.username,
           date: lastComment.created_date,
           time: lastComment.created_time,
         },
