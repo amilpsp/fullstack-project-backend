@@ -9,7 +9,6 @@ DROP TABLE IF EXISTS tokens;
 CREATE TABLE users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
-    email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL
         CHECK (length(password)>=6),
     created TEXT NOT NULL DEFAULT CURRENT_DATE
@@ -64,9 +63,9 @@ CREATE TABLE tokens(
         FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
-INSERT INTO users (username, email, password) VALUES ('anubisto', 'andrei@iths.se', 'probando123');
-INSERT INTO users (username, email, password) VALUES ('creycreycrey', 'emil@iths.se', 'probando123');
-INSERT INTO users (username, email, password) VALUES ('amilpsp', 'amanda@iths.se', 'probando123');
+INSERT INTO users (username, password) VALUES ('anubisto', 'probando123');
+INSERT INTO users (username, password) VALUES ('creycreycrey', 'probando123');
+INSERT INTO users (username, password) VALUES ('amilpsp', 'probando123');
 
 INSERT INTO forums (name,description) VALUES ('games', 'place to discuss games');
 INSERT INTO forums (name,description) VALUES ('movies', 'all the niche movie references go here, bring your spoons');
