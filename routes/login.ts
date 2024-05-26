@@ -54,10 +54,10 @@ router.delete("/", async (_req, res) => {
 			return res.status(400).json();
 		}
 		try {
-			await db.run("DELETE FROM tokens WHERE user_id =?", [user_id]);
+			await db.run("DELETE FROM tokens WHERE token =?", [token]);
 			return res.status(200).send("you've been logged out");
 		} catch (error) {
-			res.status(404).send("you seem to have already been logged out");
+			res.send("something went wrong");
 		}
 	} catch (error) {
 		res.sendStatus;
