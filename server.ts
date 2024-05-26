@@ -3,6 +3,7 @@ import express from "express";
 import { startDatabase } from "./db";
 import postsRouter from "./routes/posts";
 import forumsRouter from "./routes/forums";
+import loginRouter from "./routes/login";
 import usersRouter from "./routes/users";
 import commentsRouter from "./routes/comments";
 const port = 8080;
@@ -16,11 +17,12 @@ app.use(cors());
 
 //starting db and defining routes
 (async () => {
-  await startDatabase();
+	await startDatabase();
 
-  app.use("/posts", postsRouter);
-  app.use("/forums", forumsRouter);
-  app.use("/users", usersRouter);
-  app.use("/comments", commentsRouter);
-  app.listen(port);
+	app.use("/posts", postsRouter);
+	app.use("/forums", forumsRouter);
+	app.use("/login", loginRouter);
+	app.use("/users", usersRouter);
+	app.use("/comments", commentsRouter);
+	app.listen(port);
 })();
