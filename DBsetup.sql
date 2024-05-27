@@ -59,7 +59,7 @@ CREATE TABLE users_forums (
 
 CREATE TABLE tokens(
     user_id INTEGER NOT NULL,
-    token TEXT UNIQUE NOT NULL,
+    token TEXT PRIMARY KEY,
         FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
