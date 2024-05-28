@@ -219,6 +219,7 @@ router.get("/", async (req, res) => {
         created: "",
       };
 
+      //get the last comment through its id
       const lastComment: DbComment = (await db.get<DbComment>(
         "SELECT * FROM comments WHERE id=?",
         [post.last_comment_id]
@@ -231,15 +232,26 @@ router.get("/", async (req, res) => {
         created_time: post.created_time,
       };
 
-      const lastCommentAuthor: DbUser = (await db.get<DbUser>(
-        "SELECT * FROM users WHERE id=?",
-        [lastComment.author]
-      )) ?? {
-        id: 0,
-        username: "[deleted]",
-        password: "",
-        created: "",
-      };
+      let lastCommentAuthor: DbUser;
+
+      if (lastComment.id == 0) {
+        lastCommentAuthor = {
+          id: 0,
+          username: "[deleted]",
+          password: "",
+          created: "",
+        };
+      } else {
+        lastCommentAuthor = (await db.get<DbUser>(
+          "SELECT * FROM users WHERE id=?",
+          [lastComment.author]
+        )) ?? {
+          id: 0,
+          username: "[deleted]",
+          password: "",
+          created: "",
+        };
+      }
 
       let newPost: Post = {
         id: post.id,

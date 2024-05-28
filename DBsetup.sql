@@ -23,18 +23,18 @@ CREATE TABLE forums (
 );
 
 CREATE TABLE posts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY ,
     author INTEGER NOT NULL,
     forum INTEGER NOT NULL,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    last_comment_id INTEGER,
+    last_comment_id INTEGER DEFAULT 0,
     comment_amount INTEGER DEFAULT 0,
     created_date TEXT NOT NULL DEFAULT CURRENT_DATE,
     created_time TEXT NOT NULL DEFAULT CURRENT_TIME,
         FOREIGN KEY(author) REFERENCES users(id),
         FOREIGN KEY(forum) REFERENCES forums(id),
-        FOREIGN KEY (last_comment_id) REFERENCES comments(id),
+        FOREIGN KEY(last_comment_id) REFERENCES comments(id)
         CHECK (length(content)>=1)
 );
 
