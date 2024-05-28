@@ -100,16 +100,25 @@ router.post("/add", async (req, res) => {
     }
 
     //add the comment to the database
+
     await db.run(
       "INSERT INTO comments (author, post, content) VALUES (?,?,?)",
       [user?.id, threadId, content]
     );
 
-    //update the reply counter inside posts using the threadid!
+    const newCommentId = await db.get("SELECT last_insert_rowid() as id");
+
+    //update the reply counter inside correct post
     await db.run(
       "UPDATE posts SET comment_amount = comment_amount + 1 WHERE id=?",
       [threadId]
     );
+
+    //update lastReply in post
+    await db.run("UPDATE posts SET last_comment_id = ? WHERE id=?", [
+      newCommentId?.id,
+      threadId,
+    ]);
 
     res.status(201).send();
   } catch (error) {
