@@ -8,7 +8,7 @@ router.get("/", async (_req, res) => {
 	const db = getDatabase();
 	const { token } = _req.body;
 	try {
-		const isLoggedIn = await db.get("SELECT * FROM tokens WHERE token=?", [
+		await db.get("SELECT * FROM tokens WHERE token=?", [
 			token,
 		]);
 		res.status(200).send(token);
@@ -39,7 +39,7 @@ router.post("/", async (_req, res) => {
 			]);
 			const user_id = user.id;
 
-			res.status(201).json({ user_id, token });
+			res.status(201).json({ user_id, username, token });
 		} catch (error) {
 			res.send("Nope");
 		}
