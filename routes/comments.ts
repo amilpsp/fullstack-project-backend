@@ -96,17 +96,20 @@ router.post("/add", async (req, res) => {
     user = await db.get("SELECT * FROM users WHERE username=?", [author]);
 
     if (!user) {
-      res.status(400).send("user not found");
+      res.status(401).send("user not found");
     }
 
     //add the comment to the database
-
     await db.run(
       "INSERT INTO comments (author, post, content) VALUES (?,?,?)",
       [user?.id, threadId, content]
     );
 
     //update the reply counter inside posts using the threadid!
+    await db.run(
+      "UPDATE posts SET comment_amount = comment_amount + 1 WHERE id=?",
+      [threadId]
+    );
 
     res.status(201).send();
   } catch (error) {
