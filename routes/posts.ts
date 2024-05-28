@@ -220,6 +220,7 @@ router.get("/", async (req, res) => {
       };
 
       //get the last comment through its id
+
       const lastComment: DbComment = (await db.get<DbComment>(
         "SELECT * FROM comments WHERE id=?",
         [post.last_comment_id]
@@ -236,8 +237,8 @@ router.get("/", async (req, res) => {
 
       if (lastComment.id == 0) {
         lastCommentAuthor = {
-          id: 0,
-          username: "[deleted]",
+          id: post.author,
+          username: author.username,
           password: "",
           created: "",
         };
@@ -274,6 +275,44 @@ router.get("/", async (req, res) => {
     res.send(formattedPosts);
   } catch (error) {
     console.log(error);
+  }
+});
+
+router.post("/add", async (req, res) => {
+  const db = getDatabase();
+  const { author, forum, title, content } = req.body;
+
+  if (!author || !forum || !title || !content) {
+    res.status(400).send("missing values");
+    return;
+  }
+
+  try {
+    //get user from username
+    const user: DbUser | undefined = await db.get<DbUser>(
+      "SELECT * FROM users WHERE username=?",
+      [author]
+    );
+
+    //get topic from forum name
+    const topic: DbTopic | undefined = await db.get<DbTopic>(
+      "SELECT * FROM forums WHERE name=?",
+      [forum]
+    );
+
+    if (!topic || !user) {
+      res.status(400).send("didnt find user or topic");
+      return;
+    }
+
+    //send to database
+    await db.run(
+      "INSERT INTO posts (author, forum, title, content) VALUES (?,?,?,?)",
+      [user.id, topic.id, title, content]
+    );
+    res.status(201).send();
+  } catch (error) {
+    res.status(400).send(error);
   }
 });
 

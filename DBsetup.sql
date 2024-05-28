@@ -34,7 +34,6 @@ CREATE TABLE posts (
     created_time TEXT NOT NULL DEFAULT CURRENT_TIME,
         FOREIGN KEY(author) REFERENCES users(id),
         FOREIGN KEY(forum) REFERENCES forums(id),
-        FOREIGN KEY(last_comment_id) REFERENCES comments(id)
         CHECK (length(content)>=1)
 );
 
