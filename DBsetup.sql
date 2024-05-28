@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS users_forums;
 DROP TABLE IF EXISTS tokens;
 
 CREATE TABLE users(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL
         CHECK (length(password)>=6),
@@ -32,22 +32,22 @@ CREATE TABLE posts (
     comment_amount INTEGER DEFAULT 0,
     created_date TEXT NOT NULL DEFAULT CURRENT_DATE,
     created_time TEXT NOT NULL DEFAULT CURRENT_TIME,
-        FOREIGN KEY(author) REFERENCES accounts(id),
+        FOREIGN KEY(author) REFERENCES users(id),
         FOREIGN KEY(forum) REFERENCES forums(id),
         FOREIGN KEY (last_comment_id) REFERENCES comments(id),
         CHECK (length(content)>=1)
-); 
+);
+
 CREATE TABLE comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     author INTEGER NOT NULL,
     post INTEGER NOT NULL,
     content TEXT NOT NULL,
     created_date TEXT NOT NULL DEFAULT CURRENT_DATE,
     created_time TEXT NOT NULL DEFAULT CURRENT_TIME,
-        FOREIGN KEY(author) REFERENCES accounts(id),
-        FOREIGN KEY(post) REFERENCES posts(id),
-        CHECK (length(content)>=1)
-); 
+        FOREIGN KEY(author) REFERENCES users(id),
+        FOREIGN KEY(post) REFERENCES posts(id)
+);
 
 
 CREATE TABLE users_forums (
