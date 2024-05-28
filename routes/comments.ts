@@ -102,7 +102,7 @@ router.post("/add", async (req, res) => {
     //add the comment to the database
 
     await db.run(
-      "INSERT INTO comments (author, post, content) VALUES (?,?,?) RETURNING id",
+      "INSERT INTO comments (author, post, content) VALUES (?,?,?)",
       [user?.id, threadId, content]
     );
 
