@@ -310,7 +310,9 @@ router.post("/add", async (req, res) => {
       "INSERT INTO posts (author, forum, title, content) VALUES (?,?,?,?)",
       [user.id, topic.id, title, content]
     );
-    res.status(201).send();
+
+    const newPostId = await db.get("SELECT last_insert_rowid() as id");
+    res.status(201).send(newPostId);
   } catch (error) {
     res.status(400).send(error);
   }
