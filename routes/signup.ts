@@ -21,8 +21,10 @@ router.post("/", async (_req, res) => {
 		} catch (error) {
 			res.status(400).send("that username is already taken");
 		}
-		try {
-			/* need to check that the username is indeed unique to let the user know if that's the reason why they couldn't create that account */
+
+		res.status(201).json({ username, password });
+		/* try {
+			
 			const user = await db.get(
 				"SELECT id, username, password FROM users WHERE username =?",
 				[username]
@@ -33,10 +35,10 @@ router.post("/", async (_req, res) => {
 			]);
 			const user_id = user.id;
 
-			res.status(201).json({ user_id, username, password, token });
+			res.status(201).json({ user_id, username, token });
 		} catch (error) {
 			res.status(400).send("something went wrong");
-		}
+		} */
 	} catch (error) {}
 });
 
