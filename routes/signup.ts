@@ -19,7 +19,7 @@ router.post("/", async (_req, res) => {
 				password,
 			]);
 		} catch (error) {
-			res.status(400).send("that username is already taken");
+			res.status(400).send("user could not be created");
 		}
 		try {
 			/* need to check that the username is indeed unique to let the user know if that's the reason why they couldn't create that account */
@@ -35,7 +35,7 @@ router.post("/", async (_req, res) => {
 
 			res.status(201).json({ user_id, username, password, token });
 		} catch (error) {
-			res.status(400).send("something went wrong");
+			res.status(400).send("you couldn't be logged in, something went wrong");
 		}
 	} catch (error) {}
 });
