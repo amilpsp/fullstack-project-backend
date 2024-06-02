@@ -6,13 +6,14 @@ const router = express.Router();
 
 router.get("/", async (_req, res) => {
 	const db = getDatabase();
-	const { token } = _req.body;
+	const { user_id, username, token } = _req.body;
 	try {
-		await db.get("SELECT * FROM tokens WHERE token=?", [
-			token,
-		]);
-		res.status(200).send(token);
-	} catch (error) {}
+		await db.get("SELECT * FROM tokens WHERE token=?", [token]);
+		res.status(200).json({ user_id, username, token });
+	} catch (error) {
+		res.status(500).json({ error: "Server error" });
+	}
+	
 });
 
 router.post("/", async (_req, res) => {
