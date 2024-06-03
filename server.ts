@@ -7,7 +7,7 @@ import loginRouter from "./routes/login";
 import usersRouter from "./routes/users";
 import commentsRouter from "./routes/comments";
 import signupRouter from "./routes/signup";
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 8080;
 
 const app = express();
 
