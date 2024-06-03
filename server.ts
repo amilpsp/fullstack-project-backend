@@ -6,8 +6,8 @@ import forumsRouter from "./routes/forums";
 import loginRouter from "./routes/login";
 import usersRouter from "./routes/users";
 import commentsRouter from "./routes/comments";
-import signupRouter from "./routes/signup"
-const port = 8080;
+import signupRouter from "./routes/signup";
+const port = 10000;
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use(cors());
   app.use("/forums", forumsRouter);
   app.use("/login", loginRouter);
   app.use("/users", usersRouter);
-  app.use("/signup", signupRouter)
+  app.use("/signup", signupRouter);
   app.use("/comments", commentsRouter);
   app.listen(port);
 })();
