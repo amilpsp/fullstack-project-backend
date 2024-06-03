@@ -1,2 +1,5 @@
 node_modules
 *.js
+settings.json
+database.sqlite
+
