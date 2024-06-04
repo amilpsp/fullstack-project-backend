@@ -165,7 +165,7 @@ router.get("/", async (req, res) => {
     //if no queries, gives all posts
     if (!req.query.topic && !req.query.user) {
       posts = await db.all<DbPost[]>(
-        "SELECT * FROM posts ORDER BY created_date ASC, created_time ASC"
+        "SELECT * FROM posts ORDER BY created_date DESC, created_time DESC"
       );
     }
 
@@ -184,7 +184,7 @@ router.get("/", async (req, res) => {
 
       //get posts from correct forum
       posts = await db.all<DbPost[]>(
-        "SELECT * FROM posts WHERE forum=? ORDER BY created_date ASC, created_time ASC",
+        "SELECT * FROM posts WHERE forum=? ORDER BY created_date DESC, created_time DESC",
         [topic.id]
       );
     }
@@ -192,7 +192,7 @@ router.get("/", async (req, res) => {
     //if user query is passed, gives all posts by user
     if (req.query.userId) {
       posts = await db.all<DbPost[]>(
-        "SELECT * FROM posts WHERE author=? ORDER BY created_date ASC, created_time ASC",
+        "SELECT * FROM posts WHERE author=? ORDER BY created_date DESC, created_time DESC",
         [req.query.userId]
       );
     }
