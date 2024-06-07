@@ -1,5 +1,5 @@
-import express from "express";
-import { getDatabase } from "../db";
+import express from 'express';
+import { getDatabase } from '../db';
 
 const router = express.Router();
 
@@ -73,16 +73,16 @@ interface DbComment {
   created_time: string;
 }
 
-router.get("/", async (_req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const db = getDatabase();
 
-    const comments = await db.all("SELECT * FROM comments");
+    const comments = await db.all('SELECT * FROM comments');
     res.send(comments);
   } catch (error) {}
 });
 
-router.post("/add", async (req, res) => {
+router.post('/add', async (req, res) => {
   const db = getDatabase();
   const { author, threadId, content } = req.body;
   if (!author || !threadId || !content) {
@@ -93,29 +93,29 @@ router.post("/add", async (req, res) => {
 
   try {
     //get the userID from users
-    user = await db.get("SELECT * FROM users WHERE username=?", [author]);
+    user = await db.get('SELECT * FROM users WHERE username=?', [author]);
 
     if (!user) {
-      res.status(401).send("user not found");
+      res.status(401).send('user not found');
     }
 
     //add the comment to the database
 
     await db.run(
-      "INSERT INTO comments (author, post, content) VALUES (?,?,?)",
+      'INSERT INTO comments (author, post, content) VALUES (?,?,?)',
       [user?.id, threadId, content]
     );
 
-    const newCommentId = await db.get("SELECT last_insert_rowid() as id");
+    const newCommentId = await db.get('SELECT last_insert_rowid() as id');
 
     //update the reply counter inside correct post
     await db.run(
-      "UPDATE posts SET comment_amount = comment_amount + 1 WHERE id=?",
+      'UPDATE posts SET comment_amount = comment_amount + 1 WHERE id=?',
       [threadId]
     );
 
     //update lastReply in post
-    await db.run("UPDATE posts SET last_comment_id = ? WHERE id=?", [
+    await db.run('UPDATE posts SET last_comment_id = ? WHERE id=?', [
       newCommentId?.id,
       threadId,
     ]);

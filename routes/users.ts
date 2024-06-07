@@ -1,5 +1,5 @@
-import express from "express";
-import { getDatabase } from "../db";
+import express from 'express';
+import { getDatabase } from '../db';
 const router = express.Router();
 
 interface Post {
@@ -59,16 +59,16 @@ interface DbComment {
 }
 
 //sends a list of all users REMOVE LATER
-router.get("/", async (_req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const db = getDatabase();
-    const users = await db.all("SELECT * FROM users");
+    const users = await db.all('SELECT * FROM users');
     res.send(users);
   } catch (error) {}
 });
 
 //sends user and their related threads to frontend
-router.get("/:username", async (req, res) => {
+router.get('/:username', async (req, res) => {
   const db = getDatabase();
 
   if (!req.params.username) {
@@ -77,7 +77,7 @@ router.get("/:username", async (req, res) => {
   }
 
   const user: DbUser | undefined = await db.get(
-    "SELECT * FROM users WHERE username=?",
+    'SELECT * FROM users WHERE username=?',
     [req.params.username]
   );
 
@@ -87,7 +87,7 @@ router.get("/:username", async (req, res) => {
   }
 
   const userPosts: DbPost[] = await db.all<DbPost[]>(
-    "SELECT * FROM posts WHERE author=? ",
+    'SELECT * FROM posts WHERE author=? ',
     [user.id]
   );
 
@@ -96,27 +96,27 @@ router.get("/:username", async (req, res) => {
   // iterate through the fetched database posts to format them according to the interface
   for (let post of userPosts) {
     const author: DbUser = (await db.get<DbUser>(
-      "SELECT * FROM users WHERE id=? ",
+      'SELECT * FROM users WHERE id=? ',
       [post.author]
     )) ?? {
       id: 0,
-      username: "[deleted]",
-      password: "",
-      created: "",
+      username: '[deleted]',
+      password: '',
+      created: '',
     };
 
     const topic: DbTopic = (await db.get<DbTopic>(
-      "SELECT * FROM forums WHERE id=?",
+      'SELECT * FROM forums WHERE id=?',
       [post.forum]
     )) ?? {
       id: 0,
-      name: "unassigned",
-      description: "unassigned",
-      created: "",
+      name: 'unassigned',
+      description: 'unassigned',
+      created: '',
     };
 
     const lastComment: DbComment = (await db.get<DbComment>(
-      "SELECT * FROM comments WHERE id=?",
+      'SELECT * FROM comments WHERE id=?',
       [post.last_comment_id]
     )) ?? {
       id: 0,
@@ -128,13 +128,13 @@ router.get("/:username", async (req, res) => {
     };
 
     const lastCommentAuthor: DbUser = (await db.get<DbUser>(
-      "SELECT * FROM users WHERE id=?",
+      'SELECT * FROM users WHERE id=?',
       [lastComment.author]
     )) ?? {
       id: 0,
-      username: "[deleted]",
-      password: "",
-      created: "",
+      username: '[deleted]',
+      password: '',
+      created: '',
     };
 
     let newPost: Post = {

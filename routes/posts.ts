@@ -1,5 +1,5 @@
-import express from "express";
-import { getDatabase } from "../db";
+import express from 'express';
+import { getDatabase } from '../db';
 
 const router = express.Router();
 
@@ -73,7 +73,7 @@ interface DbComment {
   created_time: string;
 }
 
-router.get("/:postId", async (req, res) => {
+router.get('/:postId', async (req, res) => {
   if (!req.params.postId) {
     res.status(404).send();
   }
@@ -81,7 +81,7 @@ router.get("/:postId", async (req, res) => {
   const db = getDatabase();
 
   const post: DbPost | undefined = await db.get<DbPost>(
-    "SELECT * FROM posts WHERE id=?",
+    'SELECT * FROM posts WHERE id=?',
     [req.params.postId]
   );
 
@@ -91,7 +91,7 @@ router.get("/:postId", async (req, res) => {
   }
 
   const comments: DbComment[] = await db.all<DbComment[]>(
-    "SELECT * FROM comments WHERE post=?",
+    'SELECT * FROM comments WHERE post=?',
     [post?.id]
   );
 
@@ -100,13 +100,13 @@ router.get("/:postId", async (req, res) => {
 
   for (let comment of comments) {
     let commentAuthor: DbUser = (await db.get<DbUser>(
-      "SELECT * FROM users WHERE id=?",
+      'SELECT * FROM users WHERE id=?',
       [comment.author]
     )) ?? {
       id: 0,
-      username: "[deleted]",
-      password: "",
-      created: "",
+      username: '[deleted]',
+      password: '',
+      created: '',
     };
 
     const formattedComment: Comment = {
@@ -122,24 +122,24 @@ router.get("/:postId", async (req, res) => {
 
   //get the author through the author id
   const author: DbUser = (await db.get<DbUser>(
-    "SELECT * FROM users WHERE id=?",
+    'SELECT * FROM users WHERE id=?',
     [post.author]
   )) ?? {
     id: 0,
-    username: "[deleted]",
-    password: "",
-    created: "",
+    username: '[deleted]',
+    password: '',
+    created: '',
   };
 
   //get the correct topic name from the forums table based on post.topic
   const topic: DbTopic = (await db.get<DbTopic>(
-    "SELECT * FROM forums WHERE id=?",
+    'SELECT * FROM forums WHERE id=?',
     [post.forum]
   )) ?? {
     id: 0,
-    name: "unassigned",
-    description: "unassigned",
-    created: "",
+    name: 'unassigned',
+    description: 'unassigned',
+    created: '',
   };
 
   const fullPost: FullPost = {
@@ -156,7 +156,7 @@ router.get("/:postId", async (req, res) => {
   res.send(fullPost);
 });
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   let formattedPosts: Post[] = [];
   try {
     const db = getDatabase();
@@ -165,7 +165,7 @@ router.get("/", async (req, res) => {
     //if no queries, gives all posts
     if (!req.query.topic && !req.query.user) {
       posts = await db.all<DbPost[]>(
-        "SELECT * FROM posts ORDER BY created_date DESC, created_time DESC"
+        'SELECT * FROM posts ORDER BY created_date DESC, created_time DESC'
       );
     }
 
@@ -173,18 +173,18 @@ router.get("/", async (req, res) => {
     if (req.query.topic) {
       //get correct forum id
       const topic: DbTopic = (await db.get<DbTopic>(
-        "SELECT * FROM forums WHERE name=?",
+        'SELECT * FROM forums WHERE name=?',
         [req.query.topic]
       )) ?? {
         id: 0,
-        name: "unassigned",
-        description: "unassigned",
-        created: "",
+        name: 'unassigned',
+        description: 'unassigned',
+        created: '',
       };
 
       //get posts from correct forum
       posts = await db.all<DbPost[]>(
-        "SELECT * FROM posts WHERE forum=? ORDER BY created_date DESC, created_time DESC",
+        'SELECT * FROM posts WHERE forum=? ORDER BY created_date DESC, created_time DESC',
         [topic.id]
       );
     }
@@ -192,7 +192,7 @@ router.get("/", async (req, res) => {
     //if user query is passed, gives all posts by user
     if (req.query.userId) {
       posts = await db.all<DbPost[]>(
-        "SELECT * FROM posts WHERE author=? ORDER BY created_date DESC, created_time DESC",
+        'SELECT * FROM posts WHERE author=? ORDER BY created_date DESC, created_time DESC',
         [req.query.userId]
       );
     }
@@ -200,29 +200,29 @@ router.get("/", async (req, res) => {
     // iterate through the fetched database posts to format them according to the interface
     for (let post of posts) {
       const author: DbUser = (await db.get<DbUser>(
-        "SELECT * FROM users WHERE id=? ",
+        'SELECT * FROM users WHERE id=? ',
         [post.author]
       )) ?? {
         id: 0,
-        username: "[deleted]",
-        password: "",
-        created: "",
+        username: '[deleted]',
+        password: '',
+        created: '',
       };
 
       const topic: DbTopic = (await db.get<DbTopic>(
-        "SELECT * FROM forums WHERE id=?",
+        'SELECT * FROM forums WHERE id=?',
         [post.forum]
       )) ?? {
         id: 0,
-        name: "unassigned",
-        description: "unassigned",
-        created: "",
+        name: 'unassigned',
+        description: 'unassigned',
+        created: '',
       };
 
       //get the last comment through its id
 
       const lastComment: DbComment = (await db.get<DbComment>(
-        "SELECT * FROM comments WHERE id=?",
+        'SELECT * FROM comments WHERE id=?',
         [post.last_comment_id]
       )) ?? {
         id: 0,
@@ -239,18 +239,18 @@ router.get("/", async (req, res) => {
         lastCommentAuthor = {
           id: post.author,
           username: author.username,
-          password: "",
-          created: "",
+          password: '',
+          created: '',
         };
       } else {
         lastCommentAuthor = (await db.get<DbUser>(
-          "SELECT * FROM users WHERE id=?",
+          'SELECT * FROM users WHERE id=?',
           [lastComment.author]
         )) ?? {
           id: 0,
-          username: "[deleted]",
-          password: "",
-          created: "",
+          username: '[deleted]',
+          password: '',
+          created: '',
         };
       }
 
@@ -278,40 +278,40 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.post('/add', async (req, res) => {
   const db = getDatabase();
   const { author, forum, title, content } = req.body;
 
   if (!author || !forum || !title || !content) {
-    res.status(400).send("missing values");
+    res.status(400).send('missing values');
     return;
   }
 
   try {
     //get user from username
     const user: DbUser | undefined = await db.get<DbUser>(
-      "SELECT * FROM users WHERE username=?",
+      'SELECT * FROM users WHERE username=?',
       [author]
     );
 
     //get topic from forum name
     const topic: DbTopic | undefined = await db.get<DbTopic>(
-      "SELECT * FROM forums WHERE name=?",
+      'SELECT * FROM forums WHERE name=?',
       [forum]
     );
 
     if (!topic || !user) {
-      res.status(400).send("didnt find user or topic");
+      res.status(400).send('didnt find user or topic');
       return;
     }
 
     //send to database
     await db.run(
-      "INSERT INTO posts (author, forum, title, content) VALUES (?,?,?,?)",
+      'INSERT INTO posts (author, forum, title, content) VALUES (?,?,?,?)',
       [user.id, topic.id, title, content]
     );
 
-    const newPostId = await db.get("SELECT last_insert_rowid() as id");
+    const newPostId = await db.get('SELECT last_insert_rowid() as id');
     res.status(201).send(newPostId);
   } catch (error) {
     res.status(400).send(error);
